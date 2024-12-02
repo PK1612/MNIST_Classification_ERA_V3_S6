@@ -38,10 +38,10 @@ jobs:
     
     - name: Lint with flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
+        # Stop the build if there are Python syntax errors or undefined names
         flake8 src tests --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings
-        flake8 src tests --count --exit-zero --max-complexity=10 --statistics
+        # Full linting with specified configuration
+        flake8 src tests --count --max-complexity=10 --max-line-length=120 --statistics --ignore=E402,W503,E226
     
     - name: Run model architecture tests
       run: |
@@ -58,4 +58,9 @@ jobs:
         name: mnist-model
         path: |
           mnist_model_best_*.pth
-          training_history.json 
+          training_history.json
+        retention-days: 5
+
+    - name: Update README with latest results
+      run: |
+        python src/update_readme.py
