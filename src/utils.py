@@ -1,7 +1,8 @@
+"""Utility functions for MNIST classification."""
 import torch
-import torch.nn.functional as F
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
+
 
 def evaluate_model(model, device, test_loader):
     """Evaluate model accuracy."""
@@ -15,9 +16,10 @@ def evaluate_model(model, device, test_loader):
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
             total += target.size(0)
-    
+
     accuracy = 100. * correct / total
     return accuracy
+
 
 def get_data_loaders(batch_size=64, num_workers=4):
     """Create train and test data loaders."""
@@ -26,17 +28,22 @@ def get_data_loaders(batch_size=64, num_workers=4):
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
-    
+
     test_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
-    
+
     train_dataset = datasets.MNIST('../data', train=True, download=True, transform=base_transform)
     test_dataset = datasets.MNIST('../data', train=False, transform=test_transform)
-    
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, 
-                            num_workers=num_workers, pin_memory=True)
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
+        pin_memory=True
+    )
     test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
-    
+
     return train_loader, test_loader
