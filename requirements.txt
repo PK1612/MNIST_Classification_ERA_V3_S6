@@ -1,4 +1,7 @@
-torch
-torchvision
-pytest
-torchinfo
+torch>=1.8.0
+torchvision>=0.9.0
+numpy>=1.19.2
+matplotlib>=3.3.2
+pytest>=6.0.0
+flake8>=3.9.0
+pytest-cov>=2.12.0
