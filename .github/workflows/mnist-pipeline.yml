@@ -1,4 +1,4 @@
-name: Python CI/CD
+name: MNIST Classification Pipeline
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test-and-train:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,6 +41,19 @@ jobs:
         flake8 src tests --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 src tests --count --max-complexity=10 --max-line-length=127 --statistics
     
-    - name: Run tests with pytest
+    - name: Run model architecture tests
       run: |
-        pytest tests/ --cov=src --cov-report=xml
+        pytest tests/test_model.py::test_parameter_count tests/test_model.py::test_input_output_shape -v
+    
+    - name: Train model and evaluate
+      run: |
+        python src/train.py
+        pytest tests/test_model.py::test_accuracy -v
+    
+    - name: Save best model and results
+      uses: actions/upload-artifact@v4
+      with:
+        name: mnist-model
+        path: |
+          mnist_model_best_*.pth
+          training_history.json 
