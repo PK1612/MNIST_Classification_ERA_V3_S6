@@ -1,6 +1,9 @@
 import pytest
 import torch
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
 from src.model import Net
+from src.utils import evaluate_model
 
 @pytest.fixture
 def device():
@@ -9,6 +12,15 @@ def device():
 @pytest.fixture
 def model(device):
     return Net().to(device)
+
+@pytest.fixture
+def test_loader():
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
+    test_dataset = datasets.MNIST('../data', train=False, download=True, transform=transform)
+    return DataLoader(test_dataset, batch_size=1000, shuffle=False)
 
 def test_parameter_count(model):
     total_params = sum(p.numel() for p in model.parameters())
@@ -27,4 +39,4 @@ def test_model_forward(model, device):
 
 def test_accuracy(model, device, test_loader):
     accuracy = evaluate_model(model, device, test_loader)
-    assert accuracy >= 99.4, f"Model accuracy {accuracy:.2f}% is below target of 99.4%" 
+    assert accuracy >= 99.4, f"Model accuracy {accuracy:.2f}% is below target of 99.4%"

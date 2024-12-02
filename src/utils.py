@@ -1,7 +1,23 @@
 import torch
 import torch.nn.functional as F
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, ConcatDataset
+from torch.utils.data import DataLoader
+
+def evaluate_model(model, device, test_loader):
+    """Evaluate model accuracy."""
+    model.eval()
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            pred = output.argmax(dim=1, keepdim=True)
+            correct += pred.eq(target.view_as(pred)).sum().item()
+            total += target.size(0)
+    
+    accuracy = 100. * correct / total
+    return accuracy
 
 def get_data_loaders(batch_size=64, num_workers=4):
     """Create train and test data loaders."""
@@ -24,19 +40,3 @@ def get_data_loaders(batch_size=64, num_workers=4):
     test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
     
     return train_loader, test_loader
-
-def evaluate_model(model, device, test_loader):
-    """Evaluate model accuracy."""
-    model.eval()
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for data, target in test_loader:
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            pred = output.argmax(dim=1, keepdim=True)
-            correct += pred.eq(target.view_as(pred)).sum().item()
-            total += target.size(0)
-    
-    accuracy = 100. * correct / total
-    return accuracy 
