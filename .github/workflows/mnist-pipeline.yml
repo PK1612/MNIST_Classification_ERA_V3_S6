@@ -34,16 +34,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest pytest-cov
         pip install -r requirements.txt
-        pip install -e .
     
     - name: Run model architecture tests
       run: |
-        pytest tests/test_model.py::test_parameter_count tests/test_model.py::test_input_output_shape -v
+        python -m pytest tests/test_model.py::test_parameter_count tests/test_model.py::test_input_output_shape -v
     
     - name: Train model and evaluate
       run: |
-        python src/train.py
-        pytest tests/test_model.py::test_accuracy -v
+        python train.py
+        python -m pytest tests/test_model.py::test_accuracy -v
     
     - name: Save best model and results
       uses: actions/upload-artifact@v4
