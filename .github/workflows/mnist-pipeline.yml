@@ -45,7 +45,7 @@ jobs:
         
     - name: Test trained model
       run: |
-        pytest tests/test_model.py::test_accuracy tests/test_model.py::test_model_forward -v
+        pytest tests/test_model.py -v
     
     - name: Save best model and results
       uses: actions/upload-artifact@v4
