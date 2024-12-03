@@ -35,13 +35,17 @@ jobs:
         pip install pytest pytest-cov
         pip install -r requirements.txt
     
-    - name: Run model tests
+    - name: Check model architecture
       run: |
-        pytest tests/test_model.py -v
+        pytest tests/test_model.py::test_parameter_count tests/test_model.py::test_input_output_shape -v
     
     - name: Train model
       run: |
         python train.py
+        
+    - name: Test trained model
+      run: |
+        pytest tests/test_model.py::test_accuracy tests/test_model.py::test_model_forward -v
     
     - name: Save best model and results
       uses: actions/upload-artifact@v4
