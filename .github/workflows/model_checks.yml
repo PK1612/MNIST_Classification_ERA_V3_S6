@@ -2,72 +2,27 @@ name: Model Architecture Checks
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  model-checks:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.8'
-        
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install torch torchsummary numpy
+      - uses: actions/checkout@v2
 
-    - name: Run Model Architecture Checks
-      run: |
-        python -c '
-        import torch
-        from model import Net
-        from torchsummary import summary
-        import torch.nn as nn
-        
-        def check_model_requirements():
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            model = Net().to(device)
-            print("Model architecture:")
-            print(model)
-            
-            # Get model summary
-            try:
-                summary(model, (3, 32, 32))
-                
-                # Count parameters manually
-                total_params = sum(p.numel() for p in model.parameters())
-                print(f"Total parameters: {total_params}")
-                
-                # 1. Check total parameters
-                assert total_params < 20000, f"Total parameters ({total_params}) exceeds limit of 20000"
-                
-                # 2. Check for BatchNorm
-                has_batchnorm = any(isinstance(m, nn.BatchNorm2d) for m in model.modules())
-                assert has_batchnorm, "Model must use Batch Normalization"
-                
-                # 3. Check for Dropout
-                has_dropout = any(isinstance(m, nn.Dropout) or isinstance(m, nn.Dropout2d) for m in model.modules())
-                assert has_dropout, "Model must use Dropout"
-                
-                # 4. Check for FC or GAP
-                has_fc = any(isinstance(m, nn.Linear) for m in model.modules())
-                has_gap = any(isinstance(m, nn.AdaptiveAvgPool2d) for m in model.modules())
-                assert has_fc or has_gap, "Model must use either Fully Connected Layer or Global Average Pooling"
-                
-                print("All checks passed successfully!")
-                
-            except Exception as e:
-                print(f"Error during model checks: {e}")
-                raise
-            
-        check_model_requirements()
-        ' 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          python -mpytest tests/ -v

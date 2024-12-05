@@ -3,7 +3,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, ConcatDataset
 from torchvision import datasets, transforms
-from model import Net
+from MNIST_Classification_ERA_V3_S6.src.model import Net
 from datetime import datetime
 import os
 import json
