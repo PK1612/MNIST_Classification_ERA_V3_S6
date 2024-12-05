@@ -34,9 +34,19 @@ jobs:
         
         def check_model_requirements():
             model = Net()
+            print("Model architecture:")
+            print(model)
+            
+            # Define the input size
+            input_size = (1, 3, 32, 32)
+            print(f"Using input size: {input_size}")
             
             # Get model summary
-            model_stats = summary(model, input_size=(1, 3, 32, 32), verbose=0)
+            try:
+                model_stats = summary(model, input_size=input_size, verbose=1)
+            except Exception as e:
+                print(f"Error during model summary: {e}")
+                raise
             
             # 1. Check total parameters
             total_params = model_stats.total_params
