@@ -1,7 +1,7 @@
 # MNIST Digit Classification with CNN
 
 ## Project Overview
-This project implements a Convolutional Neural Network (CNN) for classifying handwritten digits from the MNIST dataset. The model achieves >99% accuracy while maintaining less than 20,000 parameters through efficient architecture design and training strategies.
+This project implements a Convolutional Neural Network (CNN) for classifying handwritten digits from the MNIST dataset. The model achieves >99.4% accuracy while maintaining less than 20,000 parameters through efficient architecture design and training strategies.
 
 ## Model Architecture
 The model uses a combination of convolutional layers, batch normalization, and dropout for effective feature extraction and regularization. The architecture progresses from local feature detection to global pattern recognition through multiple stages of processing.
@@ -59,18 +59,30 @@ Total Parameters: 16,966
 
 Epoch 1
 Learning rate: 0.005000
-Train Loss: 0.2145 | Accuracy: 93.45%
+Test set: Average loss: 0.0573 | Accuracy: 98.21%
 Epoch 5
-Learning rate: 0.003500
-Train Loss: 0.0845 | Accuracy: 98.12%
+Learning rate: 0.014872
+Test set: Average loss: 0.0283 | Accuracy: 98.99%
 Epoch 10
-Learning rate: 0.001500
-Train Loss: 0.0456 | Accuracy: 98.89%
+Learning rate: 0.010843
+Train Loss: 0.0216 | Accuracy: 99.25%
 Epoch 15
-Learning rate: 0.000750
-Train Loss: 0.0334 | Accuracy: 99.23%
+Learning rate: 0.004157
+Test set: Average loss: 0.0210 | Accuracy: 99.26%
+Epoch 17
+Learning rate: 0.001957
+Test set: Average loss: 0.0188 | Accuracy: 99.41%
+Epoch 20
+Learning rate: 0.000128
+Test set: Average loss: 0.0192 | Accuracy: 99.42%
+
+Training completed. Best accuracy: 99.42%
 Final Test Accuracy: 99.42%
 
+
+Using device: cpu
+Training dataset size: 250000
+Test dataset size: 10000
 
 ## Results
 - Test Accuracy: 99.42%
