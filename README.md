@@ -1,5 +1,7 @@
 # MNIST Digit Classification with CNN
 
+[![Model Architecture Checks](https://github.com/PK1612/MNIST_Classification_ERA_V3_S6/actions/workflows/model_checks.yml/badge.svg)](https://github.com/PK1612/MNIST_Classification_ERA_V3_S6/actions/workflows/model_checks.yml)
+
 ## Project Overview
 This project implements a Convolutional Neural Network (CNN) for classifying handwritten digits from the MNIST dataset. The model achieves >99.4% accuracy while maintaining less than 20,000 parameters through efficient architecture design and training strategies.
 
