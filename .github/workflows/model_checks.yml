@@ -1,1 +1,59 @@
- 
+name: Model Architecture Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  model-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install torch torchinfo
+
+    - name: Run Model Architecture Checks
+      run: |
+        python -c '
+        import torch
+        from model import Net
+        from torchinfo import summary
+        
+        def check_model_requirements():
+            model = Net()
+            
+            # Get model summary
+            model_stats = summary(model, input_size=(1, 3, 32, 32), verbose=0)
+            
+            # 1. Check total parameters
+            total_params = model_stats.total_params
+            assert total_params < 20000, f"Total parameters ({total_params}) exceeds limit of 20000"
+            
+            # 2. Check for BatchNorm
+            has_batchnorm = any("BatchNorm" in str(m) for m in model.modules())
+            assert has_batchnorm, "Model must use Batch Normalization"
+            
+            # 3. Check for Dropout
+            has_dropout = any("Dropout" in str(m) for m in model.modules())
+            assert has_dropout, "Model must use Dropout"
+            
+            # 4. Check for FC or GAP
+            has_fc = any("Linear" in str(m) for m in model.modules())
+            has_gap = any("AdaptiveAvgPool2d" in str(m) for m in model.modules())
+            assert has_fc or has_gap, "Model must use either Fully Connected Layer or Global Average Pooling"
+            
+            print("All checks passed successfully!")
+            
+        check_model_requirements()
+        ' 
